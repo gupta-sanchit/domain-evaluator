@@ -37,7 +37,6 @@ class DomainFetcher:
             if not pd.isnull(domain):
                 idx += 1
                 self.res[idx] = str(domain)
-        self.res['count'] = idx
         return self.res
 
 
