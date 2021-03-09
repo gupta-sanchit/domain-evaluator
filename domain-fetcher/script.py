@@ -41,9 +41,9 @@ class DomainFetcher:
         return self.res
 
 
-d = DomainFetcher()
-res = d.getDomains()
+if __name__ == '__main__':
+    d = DomainFetcher()
+    res = d.getDomains()
 
-with open('domains.json', 'w') as fp:
-    json.dump(res, fp, indent=4)
-
+    with open('data/domains.json', 'w') as fp:
+        json.dump(res, fp, indent=4)
