@@ -1,9 +1,6 @@
-import re
 import json
-import numpy as np
-import pandas as pd
 import requests
-from bs4 import BeautifulSoup
+import pandas as pd
 from pprint import pprint
 
 
@@ -24,24 +21,10 @@ class DomainFetcher:
             'TE': 'Trailers'
         }
         self.response = requests.request("POST", self.URL, headers=self.headers, data=self.payload)
-        self.soup = BeautifulSoup(self.response.text, "lxml")
+        print("Response Received !!")
 
     def getDomains(self):
-        data = []
-        table = self.soup.find('table', class_='roundedcornerswh')
-        # table_body = table.find('tbody')
-        # pprint(table_body)
 
-        rows = table.findAll('tr')
-        for row in rows:
-            pprint(rows)
-
-            # cols = row.find_all('td')
-            # cols = [ele.text.strip() for ele in cols]
-            # data.append([ele for ele in cols if ele])  # Get rid of empty values
-
-    def PandasV(self):
-        print("Start !!")
         df_list = pd.read_html(self.response.text, attrs={
             "class": "roundedcornerswh"})
 
@@ -54,10 +37,13 @@ class DomainFetcher:
             if not pd.isnull(domain):
                 idx += 1
                 self.res[idx] = str(domain)
-        print("Count:", idx)
-        pprint(self.res)
+        self.res['count'] = idx
+        return self.res
 
 
 d = DomainFetcher()
-# d.getDomains()
-d.PandasV()
+res = d.getDomains()
+
+with open('domains.json', 'w') as fp:
+    json.dump(res, fp, indent=4)
+
