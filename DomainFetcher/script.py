@@ -1,7 +1,6 @@
 import json
 import requests
 import pandas as pd
-from pprint import pprint
 
 
 class DomainFetcher:

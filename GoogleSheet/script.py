@@ -32,6 +32,7 @@ class CreateSheet:
         self.res = {}
 
         self.CreateSheetThreading()
+        print("Updated Successfully !!")
 
     def next_available_row(self):
         """
@@ -65,9 +66,7 @@ class CreateSheet:
                        paramsJSON['organic-traffic']]
                 rowBatch.append(row)
                 rowBatchSize += 1
-            print("********")
             if len(rowBatch) != 0:
-                print(1)
                 self.sheet.append_rows(rowBatch)
 
     def CreateSheetRealtime(self):

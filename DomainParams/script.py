@@ -1,5 +1,3 @@
-from requests import request
-from pprint import pprint
 import requests
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
@@ -27,7 +25,6 @@ class DomainParams:
         session.mount('https://', adapter)
 
         response = session.get(self.refURL)
-        # response = request('POST', url=self.refURL)
 
         r = response.json()
         if response.status_code != 200 or 'error' in r:
@@ -43,7 +40,6 @@ class DomainParams:
         session.mount('https://', adapter)
 
         response = session.get(self.ratingURL)
-        # response = request('POST', url=self.ratingURL)
 
         r = response.json()
         if response.status_code != 200 or 'error' in r:
@@ -59,7 +55,6 @@ class DomainParams:
         session.mount('https://', adapter)
 
         response = session.get(self.positionMetricsURL)
-        # response = request('POST', url=self.positionMetricsURL)
 
         r = response.json()
         if response.status_code != 200 or 'error' in r:
@@ -91,4 +86,3 @@ if __name__ == '__main__':
     p = DomainParams()
     params = p.getParams(domain='ahrefs.com')
     print(params)
-    # pprint(params)
