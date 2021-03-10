@@ -8,7 +8,7 @@ class DomainFetcher:
     def __init__(self):
         self.res = {}
         self.URL = 'https://www.webhosting.dk/cgi-bin/domainscannerview.pl'
-        self.payload = 'language=DKK&sortby=1&showdayslimit=28'
+        self.payload = 'language=DKK&sortby=1&showdayslimit=2'
         self.headers = {
             'User-Agent': 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:86.0) Gecko/20100101 Firefox/86.0',
             'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -44,5 +44,5 @@ if __name__ == '__main__':
     d = DomainFetcher()
     res = d.getDomains()
 
-    with open('domainsNew.json', 'w') as fp:
+    with open('domain2Days.json', 'w') as fp:
         json.dump(res, fp, indent=4)
