@@ -1,9 +1,10 @@
 import gspread
+import json
 import pandas as pd
 from tqdm import tqdm
 from pprint import pprint
-from domainParams.script import DomainParams
-from domainFetcher.script import DomainFetcher
+from DomainParams.script import DomainParams
+from DomainFetcher.script import DomainFetcher
 
 from oauth2client.service_account import ServiceAccountCredentials
 
@@ -24,22 +25,45 @@ class CreateSheet:
         self.domainJSON = {}
         self.res = {}
 
-        self.CreateSheet()
+        self.CreateSheetRealtime()
+
+    def next_available_row(self):
+        """
+        returns: index of first empty row in sheet
+        """
+        str_list = list(filter(None, self.sheet.col_values(1)))
+        return len(str_list) + 1
+
+    def CreateSheetRealtime(self):
+        self.domainJSON = DomainFetcher().getDomains()  # scraped domains json
+
+        rowIDX = self.next_available_row()  # ==>> get index of first empty row
+        for key in tqdm(self.domainJSON):
+            domain = self.domainJSON[key]
+            paramsJSON = DomainParams(domain=domain).getParams()
+            row = [domain, paramsJSON['ref-domains'], paramsJSON['domain-rating'], paramsJSON['organic-keywords'],
+                   paramsJSON['organic-traffic']]
+
+            self.sheet.insert_row(row, rowIDX)
+            # print(rowIDX)
+            # rowIDX += 1
 
     def CreateDataFrame(self):
         self.domainJSON = DomainFetcher().getDomains()  # scraped domains json
 
-        count = 0
+        idx = 0
         for key in tqdm(self.domainJSON):
-            if count == 100:
+            if idx == 100:
+                with open('data/SheetDF.json', 'w') as fp:
+                    json.dump(self.res, fp, indent=4)
+                print(f"File Saved at: {idx}")
                 break
+
             domain = self.domainJSON[key]
-
             paramsJSON = DomainParams(domain='ahrefs.com').getParams()
-            pprint(paramsJSON)
+            # pprint(paramsJSON)
             self.res[domain] = paramsJSON
-            count += 1
-
+            idx += 1
         self.df = pd.DataFrame(self.res).T.reset_index().rename(columns={'index': 'Domain-Rating'})
 
     def CreateSheet(self):
