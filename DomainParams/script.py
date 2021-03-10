@@ -1,5 +1,8 @@
 from requests import request
 from pprint import pprint
+import requests
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 
 class DomainParams:
@@ -17,8 +20,15 @@ class DomainParams:
         self.organicTraffic = -1
 
     def RefDomain(self):
-        response = request('POST', url=self.refURL)
-        # print(response.status_code)
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        response = session.get(self.refURL)
+        # response = request('POST', url=self.refURL)
+
         r = response.json()
         if response.status_code != 200 or 'error' in r:
             return
@@ -26,8 +36,15 @@ class DomainParams:
         self.refDomain = r['stats']['refdomains']
 
     def DomainRating(self):
-        response = request('POST', url=self.ratingURL)
-        # print(response.status_code)
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        response = session.get(self.ratingURL)
+        # response = request('POST', url=self.ratingURL)
+
         r = response.json()
         if response.status_code != 200 or 'error' in r:
             return
@@ -35,8 +52,15 @@ class DomainParams:
         self.domainRating = r['domain']['domain_rating']
 
     def OrganicThings(self):
-        response = request('POST', url=self.positionMetricsURL)
-        # print(response.status_code)
+        session = requests.Session()
+        retry = Retry(connect=3, backoff_factor=0.5)
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        response = session.get(self.positionMetricsURL)
+        # response = request('POST', url=self.positionMetricsURL)
+
         r = response.json()
         if response.status_code != 200 or 'error' in r:
             return

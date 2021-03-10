@@ -45,7 +45,8 @@ class CreateSheet:
         rowBatchSize = 0
         rowBatch = []
         added = 0
-        with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+        print(len(self.domainJSON.keys()))
+        with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
             futures = []
             for key in self.domainJSON:
                 domain = self.domainJSON[key]
@@ -64,7 +65,9 @@ class CreateSheet:
                        paramsJSON['organic-traffic']]
                 rowBatch.append(row)
                 rowBatchSize += 1
+            print("********")
             if len(rowBatch) != 0:
+                print(1)
                 self.sheet.append_rows(rowBatch)
 
     def CreateSheetRealtime(self):
