@@ -45,31 +45,30 @@ class CreateSheet:
                    paramsJSON['organic-traffic']]
 
             self.sheet.insert_row(row, rowIDX)
-            # print(rowIDX)
-            # rowIDX += 1
+    #   TODO ==> Save key value in domain json
 
     def CreateDataFrame(self):
         self.domainJSON = DomainFetcher().getDomains()  # scraped domains json
 
-        idx = 0
         for key in tqdm(self.domainJSON):
-            if idx == 100:
-                with open('data/SheetDF.json', 'w') as fp:
-                    json.dump(self.res, fp, indent=4)
-                print(f"File Saved at: {idx}")
-                break
-
             domain = self.domainJSON[key]
             paramsJSON = DomainParams(domain='ahrefs.com').getParams()
             # pprint(paramsJSON)
             self.res[domain] = paramsJSON
-            idx += 1
+
         self.df = pd.DataFrame(self.res).T.reset_index().rename(columns={'index': 'Domain-Rating'})
 
     def CreateSheet(self):
         # TODO ==> check for empty df
         self.CreateDataFrame()
         self.sheet.update([self.df.columns.values.tolist()] + self.df.values.tolist())
+
+    def UpdateSheet(self):
+        # TODO ==> create a df object of the existing sheet ->
+        #          create a json of new domains using CreateDataFrame()
+        #          traverse in the json, if domain in sheet df update the value else create a new row in sheet df
+        #
+        pass
 
 
 if __name__ == '__main__':
