@@ -25,11 +25,10 @@ class Run:
         Date = TIME[0]
         try:
             while True:
-                flag = False
                 currTIME = datetime.now().strftime('%d-%m-%Y %H:%M').split(" ")
                 currDate = currTIME[0]
 
-                self.connect()
+                self.connect()  # initializing connection with spreadsheet
                 c = CreateSheet(spreadSheet=self.spreadSheet)
                 listWorksheets = self.spreadSheet.worksheets()
                 sh = listWorksheets[len(listWorksheets) - 1]  # to get the recent sheet i.e, for current day
