@@ -1,6 +1,8 @@
 import json
 import requests
 import pandas as pd
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
 
 
 class DomainFetcher:
@@ -19,7 +21,15 @@ class DomainFetcher:
             'Upgrade-Insecure-Requests': '1',
             'TE': 'Trailers'
         }
-        self.response = requests.request("POST", self.URL, headers=self.headers, data=self.payload)
+        session = requests.Session()
+        retry = Retry(connect=5, backoff_factor=2, status_forcelist=[502, 503, 504])
+        adapter = HTTPAdapter(max_retries=retry)
+        session.mount('http://', adapter)
+        session.mount('https://', adapter)
+
+        self.response = session.post(self.URL,headers=self.headers, data=self.payload)
+        
+        # self.response = requests.request("POST", self.URL, headers=self.headers, data=self.payload)
         print("Response Received !!")
 
     def getDomains(self):

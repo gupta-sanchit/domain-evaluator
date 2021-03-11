@@ -19,46 +19,52 @@ class DomainParams:
 
     def RefDomain(self):
         session = requests.Session()
-        retry = Retry(connect=3, backoff_factor=0.5)
+        retry = Retry(connect=5, backoff_factor=2, status_forcelist=[502, 503, 504])
         adapter = HTTPAdapter(max_retries=retry)
         session.mount('http://', adapter)
         session.mount('https://', adapter)
 
         response = session.get(self.refURL)
 
-        r = response.json()
-        if response.status_code != 200 or 'error' in r:
+        if response.status_code != 200:
+            print("ERROR")
+            print(self.refURL)
+            print(response.text)
             return
+        r = response.json()
 
         self.refDomain = r['stats']['refdomains']
 
     def DomainRating(self):
         session = requests.Session()
-        retry = Retry(connect=3, backoff_factor=0.5)
+        retry = Retry(connect=5, backoff_factor=2, status_forcelist=[502, 503, 504])
         adapter = HTTPAdapter(max_retries=retry)
         session.mount('http://', adapter)
         session.mount('https://', adapter)
 
         response = session.get(self.ratingURL)
-
-        r = response.json()
-        if response.status_code != 200 or 'error' in r:
+        if response.status_code != 200:
+            print("ERROR")
+            print(self.ratingURL)
+            print(response.text)
             return
-
+        r = response.json()
         self.domainRating = r['domain']['domain_rating']
 
     def OrganicThings(self):
         session = requests.Session()
-        retry = Retry(connect=3, backoff_factor=0.5)
+        retry = Retry(connect=5, backoff_factor=2, status_forcelist=[502, 503, 504])
         adapter = HTTPAdapter(max_retries=retry)
         session.mount('http://', adapter)
         session.mount('https://', adapter)
 
         response = session.get(self.positionMetricsURL)
-
-        r = response.json()
-        if response.status_code != 200 or 'error' in r:
+        if response.status_code != 200:
+            print("ERROR")
+            print(self.positionMetricsURL)
+            print(response.text)
             return
+        r = response.json()
 
         self.organicKeyword = r['metrics']['positions']
         self.organicTraffic = round(r['metrics']['traffic'], 2)
