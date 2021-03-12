@@ -1,6 +1,7 @@
 import time
 import gspread
-from datetime import datetime
+import traceback
+from datetime import datetime, timedelta
 from oauth2client.service_account import ServiceAccountCredentials
 
 from GoogleSheet.script import CreateSheet
@@ -22,7 +23,7 @@ class Run:
     def Execute(self):
 
         TIME = datetime.now().strftime('%d-%m-%Y %H:%M').split(" ")
-        Date = TIME[0]
+        Date = '11' #TIME[0]
         try:
             while True:
                 currTIME = datetime.now().strftime('%d-%m-%Y %H:%M').split(" ")
@@ -34,7 +35,7 @@ class Run:
                 sh = listWorksheets[len(listWorksheets) - 1]  # to get the recent sheet i.e, for current day
 
                 if currDate != Date:
-                    shNew = self.spreadSheet.add_worksheet(title=datetime.now().strftime('%d_%m_%Y_%H_%M'), rows="10",
+                    shNew = self.spreadSheet.add_worksheet(title=datetime.now().strftime('%d_%m_%Y'), rows="10",
                                                            cols="5")
 
                     c.everyHour(shNew, sheetPrevDay=sh)
@@ -45,10 +46,12 @@ class Run:
                 else:
                     c.everyHour(sheet=sh)
 
-                print(f"Sleeping for 1 hour\nCurrent Time {datetime.now().strftime('%d-%m-%Y %H:%M')}")
-                time.sleep(120)
+                print('Sleeping for 1 hour !!')
+                print(f"Next Update Time ==> {(datetime.now() + timedelta(hours=1)).strftime('%d-%m-%Y %H:%M')}")
+                time.sleep(3600)
         except BaseException as e:
-            print(e.__traceback__)
+            print(f"Error : {e}")
+            traceback.print_tb(e.__traceback__)
             print("Timeout, Please re-run the script after 60s !!")
 
 

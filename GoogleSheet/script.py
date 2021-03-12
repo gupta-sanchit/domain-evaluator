@@ -28,14 +28,19 @@ class CreateSheet:
         #   Filtering New Domains
         self.domainJSON = DomainFetcher().getDomains()  # scraped domains json
         newDomainsJSON = {}
-        idx = 1
-        for key in self.domainJSON.keys():
-            domain = self.domainJSON[key]
-            if domain not in existingSheetDF['Domain-Name'].values:
-                newDomainsJSON[idx] = domain
-                idx += 1
-        print(f'OLD DOMAINS: {len(self.domainJSON.keys())}')
-        print(f'NEW DOMAINS: {len(newDomainsJSON.keys())}')
+
+        if len(existingSheetDF) != 0:
+            idx = 1
+            for key in self.domainJSON.keys():
+                domain = self.domainJSON[key]
+                if domain not in existingSheetDF[existingSheetDF.columns[0]].values:
+                    newDomainsJSON[idx] = domain
+                    idx += 1
+        else:
+            newDomainsJSON = self.domainJSON
+            existingSheetDF = pd.DataFrame(columns=['Domain-Name', 'Ref-Domain', 'Domain-Rating', 'Organic-Keywords',
+                                                    'Organic-Traffic'])
+        print(f'NEW DOMAINS FOUND ==> {len(newDomainsJSON.keys())}')
 
         if len(newDomainsJSON.keys()) == 0:
             print("No new domains found !!")
@@ -61,7 +66,6 @@ class CreateSheet:
         newDF = df.append(existingSheetDF)
 
         self.spreadSheet.del_worksheet(sheet)
-        print(title)
         newSheet = self.spreadSheet.add_worksheet(title=title, rows="10", cols="5")
 
         newSheet.update([newDF.columns.values.tolist()] + newDF.values.tolist())
@@ -71,5 +75,5 @@ class CreateSheet:
         )
 
         cellRANGE = f'2:{2 + len(df) - 1}'
-        print(f"cell range:{cellRANGE}")
         format_cell_range(newSheet, cellRANGE, fmt)
+        print("Sheet Updated !!")
