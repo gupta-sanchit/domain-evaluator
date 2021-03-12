@@ -23,7 +23,7 @@ class Run:
     def Execute(self):
 
         TIME = datetime.now().strftime('%d-%m-%Y %H:%M').split(" ")
-        Date = '11' #TIME[0]
+        Date = TIME[0]
         try:
             while True:
                 currTIME = datetime.now().strftime('%d-%m-%Y %H:%M').split(" ")
