@@ -47,7 +47,7 @@ class Run:
                     c.everyHour(sheet=sh)
 
                 print('Sleeping for 1 hour !!')
-                print(f"Next Update Time ==> {(datetime.now() + timedelta(hours=1)).strftime('%d-%m-%Y %H:%M')}")
+                print(f"Next Update Time ==> {(datetime.now() + timedelta(hours=1)).strftime('%d-%m-%Y %H:%M')}\n")
                 time.sleep(60)
         except BaseException as e:
             print(f"Error : {e}")

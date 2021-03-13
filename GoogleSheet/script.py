@@ -43,7 +43,6 @@ class CreateSheet:
         print(f'NEW DOMAINS FOUND ==> {len(newDomainsJSON.keys())}')
 
         if len(newDomainsJSON.keys()) == 0:
-            print("No new domains found !!")
             if sheetPrevDay:
                 sheet.update([existingSheetDF.columns.values.tolist()] + existingSheetDF.values.tolist())
                 return
