@@ -63,7 +63,10 @@ class CreateSheet:
         df = pd.DataFrame(self.res).T.reset_index(drop=True)
 
         df.columns = existingSheetDF.columns
-        newDF = df.append(existingSheetDF)
+        if sheetPrevDay:
+            newDF = df
+        else:
+            newDF = df.append(existingSheetDF)
 
         newSheet = self.spreadSheet.add_worksheet(title='temp', rows="10", cols="5")
         self.spreadSheet.del_worksheet(sheet)

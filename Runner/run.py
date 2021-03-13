@@ -48,7 +48,7 @@ class Run:
 
                 print('Sleeping for 1 hour !!')
                 print(f"Next Update Time ==> {(datetime.now() + timedelta(hours=1)).strftime('%d-%m-%Y %H:%M')}")
-                time.sleep(3600)
+                time.sleep(60)
         except BaseException as e:
             print(f"Error : {e}")
             traceback.print_tb(e.__traceback__)
