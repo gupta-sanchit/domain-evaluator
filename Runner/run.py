@@ -24,7 +24,7 @@ class Run:
     def Execute(self):
 
         TIME = datetime.now().strftime('%d-%m-%Y %H:%M').split(" ")
-        Date = '1' #TIME[0]
+        Date = TIME[0]
         try:
             while True:
                 currTIME = datetime.now().strftime('%d-%m-%Y %H:%M').split(" ")
@@ -51,13 +51,14 @@ class Run:
 
                 else:
                     if emptyFlag:
+                        print("Current Empty")
                         c.everyHour(sheet=sh, sheetPrevDay=sheetPrev, emptyFlag=True)
                     else:
                         c.everyHour(sheet=sh)
 
                 print('Sleeping for 1 hour !!')
                 print(f"Next Update Time ==> {(datetime.now() + timedelta(hours=1)).strftime('%d-%m-%Y %H:%M')}\n\n")
-                time.sleep(60)
+                time.sleep(3600)
         except BaseException as e:
             print(f"Error : {e}")
             traceback.print_tb(e.__traceback__)

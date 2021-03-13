@@ -1,6 +1,7 @@
+import json
 import pandas as pd
-import concurrent.futures
 from turtle import color
+import concurrent.futures
 from gspread_formatting import *
 from DomainParams.script import DomainParams
 from DomainFetcher.script import DomainFetcher
@@ -14,8 +15,12 @@ class CreateSheet:
         self.domainJSON = {}
         self.res = {}
         self.resStore = {}
+        self.existingDomains = {}
 
     def everyHour(self, sheet, sheetPrevDay=None, emptyFlag=False):
+        with open('../domains.json', 'r') as fp:
+            self.existingDomains = json.load(fp)
+
         title = sheet.title
         if sheetPrevDay:
             print("DAY CHANGE")
@@ -26,6 +31,10 @@ class CreateSheet:
             existingSheetDF = pd.DataFrame(sheet.get_all_records())
             bgColor = color(1.6, 1, 0)  # green
 
+        # TO CREATE DB
+        # for i in existingSheetDF[existingSheetDF.columns[0]].values:
+        #     existingDomains['domain'].append(i)
+
         #   Filtering New Domains
         self.domainJSON = DomainFetcher().getDomains()  # scraped domains json
         newDomainsJSON = {}
@@ -33,13 +42,14 @@ class CreateSheet:
         idx = 1
         for key in self.domainJSON.keys():
             domain = self.domainJSON[key]
-            if domain not in existingSheetDF[existingSheetDF.columns[0]].values:
+            if domain not in self.existingDomains['domain']:
                 newDomainsJSON[idx] = domain
+                self.existingDomains['domain'].append(domain)
                 idx += 1
 
-        # newDomainsJSON = self.domainJSON
-        # existingSheetDF = pd.DataFrame(columns=['Domain-Name', 'Ref-Domain', 'Domain-Rating', 'Organic-Keywords',
-        #                                         'Organic-Traffic'])
+        # print(len(existingDomains['domain']))
+        with open('../domains.json', 'w') as fp:
+            json.dump(self.existingDomains, fp, indent=4)
 
         print(f'NEW DOMAINS FOUND ==> {len(newDomainsJSON.keys())}')
 
