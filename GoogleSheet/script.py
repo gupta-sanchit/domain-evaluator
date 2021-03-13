@@ -15,12 +15,13 @@ class CreateSheet:
         self.res = {}
         self.resStore = {}
 
-    def everyHour(self, sheet, sheetPrevDay=None):
+    def everyHour(self, sheet, sheetPrevDay=None, emptyFlag=False):
         title = sheet.title
         if sheetPrevDay:
             print("DAY CHANGE")
             existingSheetDF = pd.DataFrame(sheetPrevDay.get_all_records())
-            bgColor = color(1, 1, 1)
+            bgColor = color(1, 1, 1)  # white
+            format_cell_range(sheetPrevDay, f'2: {2 + len(existingSheetDF) - 1}', cellFormat(backgroundColor=bgColor))
         else:
             existingSheetDF = pd.DataFrame(sheet.get_all_records())
             bgColor = color(1.6, 1, 0)  # green
@@ -29,22 +30,24 @@ class CreateSheet:
         self.domainJSON = DomainFetcher().getDomains()  # scraped domains json
         newDomainsJSON = {}
 
-        if len(existingSheetDF) != 0:
-            idx = 1
-            for key in self.domainJSON.keys():
-                domain = self.domainJSON[key]
-                if domain not in existingSheetDF[existingSheetDF.columns[0]].values:
-                    newDomainsJSON[idx] = domain
-                    idx += 1
-        else:
-            newDomainsJSON = self.domainJSON
-            existingSheetDF = pd.DataFrame(columns=['Domain-Name', 'Ref-Domain', 'Domain-Rating', 'Organic-Keywords',
-                                                    'Organic-Traffic'])
+        idx = 1
+        for key in self.domainJSON.keys():
+            domain = self.domainJSON[key]
+            if domain not in existingSheetDF[existingSheetDF.columns[0]].values:
+                newDomainsJSON[idx] = domain
+                idx += 1
+
+        # newDomainsJSON = self.domainJSON
+        # existingSheetDF = pd.DataFrame(columns=['Domain-Name', 'Ref-Domain', 'Domain-Rating', 'Organic-Keywords',
+        #                                         'Organic-Traffic'])
+
         print(f'NEW DOMAINS FOUND ==> {len(newDomainsJSON.keys())}')
 
         if len(newDomainsJSON.keys()) == 0:
             if sheetPrevDay:
-                sheet.update([existingSheetDF.columns.values.tolist()] + existingSheetDF.values.tolist())
+                df_empty = pd.DataFrame(columns=['Domain-Name', 'Ref-Domain', 'Domain-Rating', 'Organic-Keywords',
+                                                 'Organic-Traffic'])
+                sheet.update([df_empty.columns.values.tolist()] + df_empty.values.tolist())
                 return
             else:
                 return
@@ -62,7 +65,7 @@ class CreateSheet:
         df = pd.DataFrame(self.res).T.reset_index(drop=True)
 
         df.columns = existingSheetDF.columns
-        if sheetPrevDay:
+        if sheetPrevDay or emptyFlag:
             newDF = df
         else:
             newDF = df.append(existingSheetDF)
