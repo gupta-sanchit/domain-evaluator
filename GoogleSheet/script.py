@@ -33,7 +33,7 @@ class CreateSheet:
 
         # TO CREATE DB
         # for i in existingSheetDF[existingSheetDF.columns[0]].values:
-        #     existingDomains['domain'].append(i)
+        #     self.existingDomains['domain'].append(i)
 
         #   Filtering New Domains
         self.domainJSON = DomainFetcher().getDomains()  # scraped domains json
