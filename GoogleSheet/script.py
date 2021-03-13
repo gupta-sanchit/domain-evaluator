@@ -65,8 +65,9 @@ class CreateSheet:
         df.columns = existingSheetDF.columns
         newDF = df.append(existingSheetDF)
 
+        newSheet = self.spreadSheet.add_worksheet(title='temp', rows="10", cols="5")
         self.spreadSheet.del_worksheet(sheet)
-        newSheet = self.spreadSheet.add_worksheet(title=title, rows="10", cols="5")
+        newSheet.update_title(title)
 
         newSheet.update([newDF.columns.values.tolist()] + newDF.values.tolist())
 
