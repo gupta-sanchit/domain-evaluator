@@ -19,7 +19,8 @@ class Run:
 
     def connect(self):
         self.client = gspread.authorize(self.creds)
-        self.spreadSheet = self.client.open("Copy of domain-info1111")
+        self.spreadSheet = self.client.open("domain-info")
+        # self.spreadSheet = self.client.open("Copy of domain-info1111")
 
     def Execute(self):
 
