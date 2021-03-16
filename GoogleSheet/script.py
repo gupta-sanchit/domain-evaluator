@@ -48,8 +48,6 @@ class CreateSheet:
                 idx += 1
 
         # print(len(existingDomains['domain']))
-        with open('../domains.json', 'w') as fp:
-            json.dump(self.existingDomains, fp, indent=4)
 
         print(f'NEW DOMAINS FOUND ==> {len(newDomainsJSON.keys())}')
 
@@ -92,4 +90,9 @@ class CreateSheet:
 
         cellRANGE = f'2:{2 + len(df) - 1}'
         format_cell_range(newSheet, cellRANGE, fmt)
+
+        with open('../domains.json', 'w') as fp:
+            json.dump(self.existingDomains, fp, indent=4)
+
         print("Sheet Updated !!")
+
